@@ -691,3 +691,4 @@ So we are root. Now we can simply grab the root flag by traversing to root direc
 
 We have successfully solved this room and answered all the questions. Hope you all enjoyed it. Stay tuned. `:-)`
 
+![kenobi solved gif](.medias/kenobi/kenobi_solved.gif)
