@@ -1,5 +1,5 @@
 # <center>Blue</center>
-<p align="center"><img src=".medias/Blue/blue_logo.gif">
+<p align="center"><img src=".medias/blue/blue_logo.gif">
 
 Hello homies. Today we'll solve an easy room on Try Hack Me. I'll be guiding you through each task given in the room. lettuce Deploy & hack into a Windows machine, leveraging common misconfigurations issues 👿.
 
@@ -101,7 +101,7 @@ and do the steps shown below:
 **Q1. Find the exploitation code we will run against the machine. What is the full path of the code? (Ex: exploit/........)**
 
 - `search ms17-010`
-![searching exploit](.medias/Blue/search_exploit.png)
+![searching exploit](.medias/blue/search_exploit.png)
 
 - `use exploit/windows/smb/ms17_010_eternalblue`
 
@@ -115,7 +115,7 @@ and do the steps shown below:
 
 **Q2. Show options and set the one required value. What is the name of this value? (All caps for submission)**
 - `show options`
-![show options for the exploit](.medias/Blue/options.png)
+![show options for the exploit](.medias/blue/options.png)
 
 ```bash
 msf6 exploit(windows/smb/ms17_010_eternalblue) > set RHOSTS 10.10.231.72
@@ -167,7 +167,7 @@ Jon:1000:aad3b435b51404eeaad3b435b51404ee:ffb43f0de35be4d9917ac0cc8ad57f8d:::
 
 We got three users. and their hashes as well. And we are required to crack the Jon's password. let's copy the hash for Jon in a file hash.txt and use John the ripper to crack the password.
 
-![cracking password](.medias/Blue/crack_password.png)
+![cracking password](.medias/blue/crack_password.png)
 
 and we successfully got teh password for user Jon.
 
@@ -189,7 +189,7 @@ Alternatively, we can also copy the hashpart of password and give it to [hashes.
 Since the flag is located in system root directory. Let's go to `C` drive and search for it
 ```
 
-![flag1](.medias/Blue/flag1.png)
+![flag1](.medias/blue/flag1.png)
 **Ans: `flag{access_the_machine}`**
 
 
@@ -201,7 +201,7 @@ Since the flag is located in system root directory. Let's go to `C` drive and se
 By default, meterpreter shell has a search functionality that can help use search a file.
 ```
 
-![flag2](.medias/Blue/flag2.png)
+![flag2](.medias/blue/flag2.png)
 **Ans: `flag{sam_database_elevated_access}`**
 
 **Q3. flag3? This flag can be found in an excellent location to loot. After all, Administrators usually have pretty interesting things saved.**
@@ -209,7 +209,7 @@ By default, meterpreter shell has a search functionality that can help use searc
 ```text
 similarly, we can also search for flag3.txt.
 ```
-![flag3](.medias/Blue/flag3.png)
+![flag3](.medias/blue/flag3.png)
 
 **Ans: `flag{admin_documents_can_be_valuable}`**
 
